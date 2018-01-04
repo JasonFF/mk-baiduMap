@@ -9,5 +9,13 @@ module.exports = appInfo => {
   // add your config here
   config.middleware = [];
 
+  config.view = {
+    defaultViewEngine: 'nunjucks',
+    mapping: {
+      '.tpl': 'nunjucks',
+      '.html': 'nunjucks',
+    },
+  };
+
   return config;
 };

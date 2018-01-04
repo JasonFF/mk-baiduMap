@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>baiduMap</title>
+  <style type="text/css">
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <canvas id="canvas"></canvas>
+  <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="http://api.map.baidu.com/api?v=2.0&ak=r35GtjzkwBcnkT1p7esuhmWgOm7tK9Iw"></script>
+  <script src="http://mapv.baidu.com/build/mapv.min.js"></script>
+  <script type="text/javascript">  
+
+     // 百度地图API功能
+     var map = new BMap.Map("map", {
+      enableMapClick: false
+  });    // 创建Map实例
+  map.centerAndZoom(new BMap.Point(106.962497, 38.208726), 5);  // 初始化地图,设置中心点坐标和地图级别
+  map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放
+
+  map.setMapStyle({
+      styleJson: [
+          {
+              "featureType": "all",
+              "elementType": "all",
+              "stylers": {
+                  "lightness": 61,
+                  "saturation": -100
+              }
+          }
+      ]
+  });
+
+  var citys = {
+      '新疆省': Math.random() * 70,
+      '西藏省': Math.random() * 70,
+      '内蒙古省': Math.random() * 70,
+      '青海省': Math.random() * 70,
+      '四川省': Math.random() * 70,
+      '黑龙江省': Math.random() * 70,
+      '甘肃省': Math.random() * 70,
+      '云南省': Math.random() * 70,
+      '广西省': Math.random() * 70,
+      '湖南省': Math.random() * 70,
+      '陕西省': Math.random() * 70,
+      '广东省': Math.random() * 70,
+      '吉林省': Math.random() * 70,
+      '河北省': Math.random() * 70,
+      '湖北省': Math.random() * 70,
+      '贵州省': Math.random() * 70,
+      '山东省': Math.random() * 70,
+      '江西省': Math.random() * 70,
+      '河南省': Math.random() * 70,
+      '辽宁省': Math.random() * 70,
+      '山西省': Math.random() * 70,
+      '安徽省': Math.random() * 70,
+      '福建省': Math.random() * 70,
+      '浙江省': Math.random() * 70,
+      '江苏省': Math.random() * 70,
+      '重庆省': Math.random() * 70,
+      '宁夏省': Math.random() * 70,
+      '海南省': Math.random() * 70,
+      '台湾省': Math.random() * 70,
+      '北京省': Math.random() * 70,
+      '天津省': Math.random() * 70,
+      '上海省': Math.random() * 70,
+      '香港省': Math.random() * 70,
+      '澳门省': Math.random() * 70,
+  }
+
+  $.get(' https://www.easy-mock.com/mock/5a4de8ddd15d983e1a86ef37/baiduMap/china', function(geojson) {
+
+      var dataSet = mapv.geojson.getDataSet(geojson);
+
+      var data = dataSet.get({
+          filter: function (item) {
+              if (!citys[item.name]) {
+                  return false;
+              }
+
+              item.count = citys[item.name];
+              return true;
+          }
+      });
+
+      dataSet = new mapv.DataSet(data);
+
+      var options = {
+          splitList: [
+              {
+                  start: 0,
+                  end: 10,
+                  value: '#f1eef6'
+              },{
+                  start: 10,
+                  end: 20,
+                  value: '#d5bad9'
+              },{
+                  start: 20,
+                  end: 30,
+                  value: '#cc97c7'
+              },{
+                  start: 30,
+                  end: 40,
+                  value: '#e469af'
+              },{
+                  start: 40,
+                  end: 50,
+                  value: '#ee3387'
+              },{
+                  start: 50,
+                  end: 60,
+                  value: '#d61e53'
+              },{
+                  start: 60,
+                  value: '#960b3d'
+              }
+          ],
+          methods: {
+              click: function (item) {
+                  console.log(item);
+              },
+              mousemove: function (item) {
+                  item = item || {};
+                  var data = dataSet.get();
+                  for (var i = 0; i < data.length; i++) {
+                      if (item.id == data[i].id) {
+                          data[i].fillStyle = 'yellow';
+                      } else {
+                          data[i].fillStyle = null;
+                      }
+                  }
+                  dataSet.set(data);
+              }
+          },
+          globalAlpha: 0.9,
+          draw: 'choropleth'
+      }
+
+      var mapvLayer = new mapv.baiduMapLayer(map, dataSet, options);
+
+  });
+
+  var data = [];
+
+  for (var key in citys) {
+      var cityCenter = mapv.utilCityCenter.getCenterByCityName(key);
+      if (cityCenter) {
+          data.push({
+              text: key,
+              geometry: {
+                  type: 'Point',
+                  coordinates: [cityCenter.lng, cityCenter.lat]
+              }
+          });
+      }
+  }
+
+  var dataSet = new mapv.DataSet(data);
+
+  var options = {
+      fillStyle: 'rgba(55, 50, 50, 0.8)',
+      shadowColor: 'rgba(55, 50, 50, 0.5)',
+      shadowBlur: 10,
+      size: 3,
+      zIndex: 10,
+      draw: 'simple'
+  }
+
+  var mapvLayer = new mapv.baiduMapLayer(map, dataSet, options);
+
+  var options = {
+      fillStyle: 'rgba(55, 50, 50, 0.8)',
+      shadowColor: 'rgba(55, 50, 50, 0.5)',
+      offset: {
+          x: 0,
+          y: -10
+      },
+      shadowBlur: 10,
+      size: 3,
+      zIndex: 10,
+      draw: 'text'
+  }
+  var mapvLayer = new mapv.baiduMapLayer(map, dataSet, options);
+
+  </script>
+</body>
+</html>
