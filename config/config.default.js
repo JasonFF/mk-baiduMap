@@ -1,5 +1,7 @@
 'use strict';
 
+var path = require('path')
+
 module.exports = appInfo => {
   const config = exports = {};
 
@@ -17,5 +19,9 @@ module.exports = appInfo => {
     },
   };
 
+  config.static = {
+      prefix: '/app/',
+      dir: [path.join(appInfo.baseDir, './app/public'), path.join(appInfo.baseDir, './app/web')]
+  }
   return config;
 };
