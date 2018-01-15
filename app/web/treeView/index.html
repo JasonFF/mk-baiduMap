@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>treeView</title>
+  <!-- Required Stylesheets -->
+<link href="/app/bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+
+<!-- Required Javascript -->
+<script src="/app/bower_components/jquery/dist/jquery.js"></script>
+<script src="./tree-view.js"></script>
+<style>
+  .treeViewBox {
+    width: 500px
+  }
+  .mk-tree-view-has-operate {
+    background: #FCF8E3
+  }
+</style>
+</head>
+<body>
+  <main>
+    <div class="treeViewBox">
+        <div id="tree"></div>
+    </div>
+  </main>
+  <script>
+    $(function () {
+      $.get('https://www.easy-mock.com/mock/5a57283085b0e15d8db5239e/instrumentCloud/treeView', function(data) {
+        console.log(data)
+        
+        var result = $('#tree').treeview({
+          data: data,
+          onNodeSelected: function (e, item, b) {
+            if (item.isRoot == 0) {
+              return
+            }
+          }
+        });
+        $('#tree').treeview('collapseAll', { silent: true });
+      })
+    })
+  </script>
+</body>
+</html>

@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "axios": "^0.17.1",
+    "bower": "^1.8.2",
     "egg": "^2.0.0",
     "egg-scripts": "^2.1.0",
     "egg-view-nunjucks": "^2.1.4",

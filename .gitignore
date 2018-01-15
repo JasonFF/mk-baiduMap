@@ -11,3 +11,4 @@ run/
 *.sw*
 *.un~
 app/public/excelDisplayDemo/
+app/web/bower_components/
